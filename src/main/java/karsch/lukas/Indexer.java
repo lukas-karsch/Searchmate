@@ -9,8 +9,10 @@ import java.util.HashMap;
  * This class indexes single files.
  */
 public class Indexer {
+    private HashMap<String, Integer> frequency;
+
     public HashMap<String, Integer> indexFile(Path p) {
-        HashMap<String, Integer> fileIndex = new HashMap<>();
+        frequency = new HashMap<>();
         String content = "";
 
         try {
@@ -21,7 +23,7 @@ public class Indexer {
             ioErr.printStackTrace();
         }
         catch (OutOfMemoryError outOfMemoryError) {
-            System.err.println("Could not index file " + p.getFileName() + " because it is too large.");
+            System.err.println("[ERR] Could not index file " + p.getFileName() + ". It might be too large.");
         }
 
         while (content.length() > 0) {
@@ -38,13 +40,7 @@ public class Indexer {
                     cut++;
                 }
                 content = content.substring(cut);
-                String finalToken = token.toString();
-                if(fileIndex.containsKey(finalToken)) {
-                    fileIndex.put(finalToken, fileIndex.get(finalToken) + 1);
-                }
-                else {
-                    fileIndex.put(finalToken, 1);
-                }
+                putToken(token.toString());
             }
             else if (Character.isAlphabetic(first)) {
                 StringBuilder token = new StringBuilder(first);
@@ -55,13 +51,7 @@ public class Indexer {
                     cut++;
                 }
                 content = content.substring(cut);
-                String finalToken = token.toString();
-                if(fileIndex.containsKey(finalToken)) {
-                    fileIndex.put(finalToken, fileIndex.get(finalToken) + 1);
-                }
-                else {
-                    fileIndex.put(finalToken, 1);
-                }
+                putToken(token.toString());
             }
             else {
                 StringBuilder token = new StringBuilder(first);
@@ -72,15 +62,19 @@ public class Indexer {
                     cut++;
                 }
                 content = content.substring(cut);
-                String finalToken = token.toString();
-                if(fileIndex.containsKey(finalToken)) {
-                    fileIndex.put(finalToken, fileIndex.get(finalToken) + 1);
-                }
-                else {
-                    fileIndex.put(finalToken, 1);
-                }
+                putToken(token.toString());
             }
         }
-        return fileIndex;
+        return frequency;
+    }
+
+    private void putToken(String token) {
+        token = token.toUpperCase();
+        if(frequency.containsKey(token)) {
+            frequency.put(token, frequency.get(token) + 1);
+        }
+        else {
+            frequency.put(token, 1);
+        }
     }
 }
