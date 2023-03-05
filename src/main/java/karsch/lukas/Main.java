@@ -5,8 +5,8 @@ public class Main {
         App app = new App();
         switch (args[0]) {
             case "index" -> {
-                System.out.println("Starting indexing of all files");
-                app.runIndexing();
+                System.out.format("Starting indexing of all files in %s\n", args[1]);
+                app.runIndexing(args[1], args[2]);
             }
             case "serve" -> {
                 System.out.println("Running server at " + args[1]);

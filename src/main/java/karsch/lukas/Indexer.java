@@ -53,7 +53,7 @@ public class Indexer {
                 content = content.substring(cut);
                 putToken(token.toString());
             }
-            else {
+            else { //NOTE: sollte das sonderzeichen aneinanderhängen oder trennen?
                 StringBuilder token = new StringBuilder(first);
                 int cut = 0;
 
