@@ -1,28 +1,37 @@
 package karsch.lukas;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 public class App {
     /**
-     * This method indexes the target folder and saves results of the operation to <code>filePath</code>.
+     * This method indexes the target folder and saves results of the operation to <code>targetFile</code>.
      * @param indexingTarget Path to the folder that the indexing will be run on
-     * @param filePath Path to the folder where the index.json file will be saved to. This file contains all results of indexing and
+     * @param targetFile Path to the folder where the index.json file will be saved to. This file contains all results of indexing and
      *                 needs to be supplied to runServer() when trying to provide queries later on.
      */
-    public void runIndexing(String indexingTarget, String filePath) {
-        /*
-        * Pseudocode
-        *
-        * for file in directory
-        *   tokenize file FileIndex -> <token, freq>
-        *   add to file index: DocIndex -> <token, documentCount>
-        *   save file to json
-        *
-        * */
-        Path path = Path.of(indexingTarget);
+    public void runIndexing(String indexingTarget, String targetFile) {
+        Path indexingTargetPath, targetFilePath;
+        try {
+            indexingTargetPath = Path.of(indexingTarget);
+            targetFilePath = Path.of(targetFile);
+        }
+        catch (InvalidPathException invalidPath) {
+            System.err.println("[ERROR] Could not parse one of your supplied paths.");
+            return;
+        }
         Model model = new Model();
-        model.buildModel(path);
-        model.serialize(Path.of("D:\\temp\\index"));
+        model.buildModel(indexingTargetPath);
+        model.serialize(targetFilePath);
+    }
+
+    /**
+     * Counts all files inside a folder
+     * @param path Path to the folder
+     */
+    public void countAllFiles(String path) {
+        Model model = new Model();
+        System.out.println(model.getDocumentAmount(Path.of(path), 0));
     }
 
     public void runServer() {

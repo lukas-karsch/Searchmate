@@ -10,8 +10,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 public class Model {
-    //TODO: These fields below need to be serialized and deserialized from / to JSON format
     //TODO: save amount of tokens "n" per document
+    //TODO: just save TF and IDF per term?
     public HashMap<String, HashMap<String, Integer>> pathToDocumentIndex;   //maps Paths to their indexed document
     public HashMap<String, Integer> totalTokenCount;                        //maps every single token to their count across all documents
 
@@ -32,16 +32,14 @@ public class Model {
                 HashMap<String, Integer> docIndex = indexer.indexFile(f.toPath());
                 pathToDocumentIndex.put(f.getPath(), docIndex);
                 addToWortCount(docIndex);
-                /*docIndex
-                    .forEach((key, value) -> System.out.format("    %s => %d\n", key, value));*/
             }
         }
     }
 
-    private void addToWortCount(HashMap<String, Integer> docIndex) {
+    private void addToWortCount(HashMap<String, Integer> docIndex) { //TODO: this should only increment the counter by 1 per document?? maybe??
         docIndex.forEach((token, count) -> {
             totalTokenCount.
-                    put(token, totalTokenCount.getOrDefault(token, 0) + count); //TODO: this seems to be off by 1?
+                    put(token, totalTokenCount.getOrDefault(token, 0) + count);
         });
     }
 
@@ -57,7 +55,7 @@ public class Model {
             deserialized = DESERIALIZER.fromJson(filePath.toString(), Model.class);
         }
         catch (JsonSyntaxException e) {
-            System.err.format("Could not read index file %s\n", filePath);
+            System.err.format("[ERROR] Could not read index file %s\n", filePath);
             e.printStackTrace();
             return null;
         }
@@ -70,7 +68,6 @@ public class Model {
      * @param saveTo Path that the JSON will be saved to
      */
     public void serialize(Path saveTo){
-        //TODO: wie sieht der path aus? braucht man filename, was wenn kein filename drin steht sondern nur ordner?
         final Gson SERIALIZER = new Gson();
         final String JSON = SERIALIZER.toJson(this);
         try {
@@ -83,5 +80,19 @@ public class Model {
             return;
         }
         System.out.format("Serialized and saved to %s\n", saveTo);
+    }
+
+    public int getDocumentAmount(Path p, int current) {
+        File dir = new File(p.toUri());
+        File[] allFiles = dir.listFiles();
+        if(allFiles == null) return current;
+
+        for(File f : allFiles) {
+            if(f.isDirectory()) current = getDocumentAmount(f.toPath(), current);
+            else {
+                current++;
+            }
+        }
+        return current;
     }
 }
