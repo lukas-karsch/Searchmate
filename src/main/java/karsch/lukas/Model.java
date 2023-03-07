@@ -36,6 +36,10 @@ public class Model {
         }
     }
 
+    /**
+     * Looping through all files inside a directory. Files are then tokenized, indexed and added to the model.
+     * @param path Path to the directory that shall be searched
+     */
     public void buildModel(Path path) {
         File dir = new File(path.toUri());
         File[] allFiles = dir.listFiles();
@@ -52,6 +56,10 @@ public class Model {
         }
     }
 
+    /**
+     * This method is called after indexing a document. All the tokens in that document are added to the model's total token count.
+     * @param docIndex Indexed document
+     */
     private void addToWortCount(HashMap<String, Integer> docIndex) { //TODO: this should only increment the counter by 1 per document?? maybe??
         docIndex.forEach((token, count) -> {
             totalTokenCount.
@@ -100,6 +108,12 @@ public class Model {
         System.out.format("Serialized and saved to %s\n", saveTo);
     }
 
+    /**
+     * Loops through the specified directory to get the number of files inside.
+     * @param p Path that shall be scanned
+     * @param current For the recursive call
+     * @return How many files are inside the specified Path p (excluding folders)
+     */
     public int getDocumentAmount(Path p, int current) {
         File dir = new File(p.toUri());
         File[] allFiles = dir.listFiles();

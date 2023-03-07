@@ -10,17 +10,11 @@ public class App {
      * @param targetFile Path to the folder where the index.json file will be saved to. This file contains all results of indexing and
      *                 needs to be supplied to runServer() when trying to provide queries later on.
      */
-    public void runIndexing(String indexingTarget, String targetFile) {
-        Path indexingTargetPath, targetFilePath;
-        try {
-            indexingTargetPath = Path.of(indexingTarget);
-            targetFilePath = Path.of(targetFile);
-        }
-        catch (InvalidPathException invalidPath) {
-            System.err.println("[ERROR] Could not parse one of your supplied paths.");
-            return;
-        }
-        Model model = new Model();
+    public void runIndexing(String indexingTarget, String targetFile) throws InvalidPathException {
+        final Path indexingTargetPath = Path.of(indexingTarget);
+        final Path targetFilePath = Path.of(targetFile);
+
+        final Model model = new Model();
         model.buildModel(indexingTargetPath);
         model.serializeToJson(targetFilePath);
     }
@@ -29,7 +23,7 @@ public class App {
      * Counts all files inside a folder
      * @param path Path to the folder
      */
-    public void countAllFiles(String path) {
+    public void countAllFiles(String path) throws InvalidPathException {
         Model model = new Model();
         System.out.println(model.getDocumentAmount(Path.of(path), 0));
     }
@@ -38,11 +32,11 @@ public class App {
         //TODO: Implement me
     }
 
-    public void runSearch(String pathToIndexFile) {
+    public void runSearch(String pathToIndexFile) throws InvalidPathException {
         Path p = Path.of(pathToIndexFile); //TODO: add try catch
         Search search = new Search(p);
         System.out.println("Searching in " + p.getFileName());
-        search.search("i hate my life")
-                .forEach((key, value) -> System.out.format("%6f: %s\n", value, key));
+        search.search("compare double")
+                .forEach(e -> System.out.format("%6f: %s\n", e.getValue(), e.getKey()));
     }
 }

@@ -1,5 +1,7 @@
 package karsch.lukas;
 
+import java.nio.file.InvalidPathException;
+
 public class Main {
     public static void main(String[] args) {
         App app = new App();
@@ -22,10 +24,13 @@ public class Main {
                 }
             }
         }
+        catch (InvalidPathException invalidPath) {
+            System.err.print("[ERROR] Looks like you specified an invalid path...");
+        }
         catch (Exception e) {
-            e.printStackTrace();
             System.err.println("Canceling.");
             System.err.println("An error occured. Check the README.md file for infos on usage.");
+            e.printStackTrace();
         }
     }
 }
