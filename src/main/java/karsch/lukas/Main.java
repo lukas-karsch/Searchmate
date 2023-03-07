@@ -12,9 +12,13 @@ public class Main {
                 case "serve" -> {
                     System.out.println("Listening at " + args[1]);
                 }
-                case "search" -> {
+                case "count" -> {
                     System.out.println("Counting all files...");
                     app.countAllFiles(args[1]);
+                }
+                case "search" -> {
+                    System.out.println("Searching...");
+                    app.runSearch(args[1]);
                 }
             }
         }

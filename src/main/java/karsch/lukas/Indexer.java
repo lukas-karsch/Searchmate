@@ -67,7 +67,7 @@ public class Indexer {
         return frequency;
     }
     private void putToken(String token) {
-        token = token.toUpperCase();
+        token = token.toLowerCase();
         if(frequency.containsKey(token)) {
             frequency.put(token, frequency.get(token) + 1);
         }

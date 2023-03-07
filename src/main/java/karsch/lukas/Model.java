@@ -10,14 +10,30 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 public class Model {
-    //TODO: save amount of tokens "n" per document
-    //TODO: just save TF and IDF per term?
+    //TODO: save amount of tokens "n" per document, TF and IDF
     public HashMap<String, HashMap<String, Integer>> pathToDocumentIndex;   //maps Paths to their indexed document
     public HashMap<String, Integer> totalTokenCount;                        //maps every single token to their count across all documents
 
     public Model() {
         pathToDocumentIndex = new HashMap<>();
         totalTokenCount = new HashMap<>();
+    }
+
+    /**
+     * This constructor creates a Model by deserializing an index file. If this file is invalid, an empty Model will be created
+     * @param p Path to the file containing indexing results
+     */
+    public Model(Path p) {
+        Model deserialized = deserializeFromJson(p);
+        if(deserialized == null) {
+            System.err.println("[ERROR] The provided file seems to not exist or contain invalid information.");
+            pathToDocumentIndex = new HashMap<>();
+            totalTokenCount = new HashMap<>();
+        }
+        else {
+            pathToDocumentIndex = deserialized.pathToDocumentIndex;
+            totalTokenCount = deserialized.totalTokenCount;
+        }
     }
 
     public void buildModel(Path path) {
@@ -46,18 +62,20 @@ public class Model {
     /**
      * Reads a JSON file containing the results of indexing into Model
      * @param filePath Path to the json file that stores the results of file indexation
-     * @return Model object
+     * @return Model object from file. Returns Null if the provided file is invalid
      */
-    public Model deserialize(Path filePath){
+    public static Model deserializeFromJson(Path filePath) {
         final Gson DESERIALIZER = new Gson();
         Model deserialized;
         try {
-            deserialized = DESERIALIZER.fromJson(filePath.toString(), Model.class);
+            deserialized = DESERIALIZER.fromJson(Files.readString(filePath), Model.class);
         }
         catch (JsonSyntaxException e) {
             System.err.format("[ERROR] Could not read index file %s\n", filePath);
             e.printStackTrace();
             return null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         System.out.format("Loaded %s successfully!\n", filePath.getFileName());
         return deserialized;
@@ -67,7 +85,7 @@ public class Model {
      * Serializes the Model into JSON for later use
      * @param saveTo Path that the JSON will be saved to
      */
-    public void serialize(Path saveTo){
+    public void serializeToJson(Path saveTo) {
         final Gson SERIALIZER = new Gson();
         final String JSON = SERIALIZER.toJson(this);
         try {

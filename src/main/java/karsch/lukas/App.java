@@ -22,7 +22,7 @@ public class App {
         }
         Model model = new Model();
         model.buildModel(indexingTargetPath);
-        model.serialize(targetFilePath);
+        model.serializeToJson(targetFilePath);
     }
 
     /**
@@ -36,5 +36,13 @@ public class App {
 
     public void runServer() {
         //TODO: Implement me
+    }
+
+    public void runSearch(String pathToIndexFile) {
+        Path p = Path.of(pathToIndexFile); //TODO: add try catch
+        Search search = new Search(p);
+        System.out.println("Searching in " + p.getFileName());
+        search.search("i hate my life")
+                .forEach((key, value) -> System.out.format("%6f: %s\n", value, key));
     }
 }
