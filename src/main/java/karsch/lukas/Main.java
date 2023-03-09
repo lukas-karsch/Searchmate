@@ -12,7 +12,7 @@ public class Main {
                     app.runIndexing(args[1], args[2]);
                 }
                 case "serve" -> {
-                    System.out.println("Listening at " + args[1]);
+                    app.runServer(Integer.parseInt(args[1]), args[2]);
                 }
                 case "count" -> {
                     System.out.println("Counting all files...");
@@ -22,10 +22,15 @@ public class Main {
                     System.out.println("Searching...");
                     app.runSearch(args[1]);
                 }
+                default ->
+                    System.err.println("Unknown command. Check the README.md file for infos on usage.");
             }
         }
         catch (InvalidPathException invalidPath) {
-            System.err.print("[ERROR] Looks like you specified an invalid path...");
+            System.err.print("[ERROR] Looks like you specified an invalid path.");
+        }
+        catch (NumberFormatException numExc) {
+            System.err.println("Could not parse your input into a number.");
         }
         catch (Exception e) {
             System.err.println("Canceling.");

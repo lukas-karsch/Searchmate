@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 3rem;
+    font-family: Poppins, Arial, sans-serif;
+    text-align: center;
+}
+
+input {
+    padding: 1rem;
+    width: 400px;
+}
+
+footer {
+    padding-block: 2rem;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

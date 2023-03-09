@@ -1,5 +1,6 @@
 package karsch.lukas;
 
+import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
@@ -28,15 +29,19 @@ public class App {
         System.out.println(model.getDocumentAmount(Path.of(path), 0));
     }
 
-    public void runServer() {
-        //TODO: Implement me
+    public void runServer(int port, String pathToIndex) throws InvalidPathException {
+        try {
+            Server server = new Server(8080, Path.of(pathToIndex));
+        }
+        catch (IOException io) {
+            System.err.println("Invalid port");
+        }
     }
 
     public void runSearch(String pathToIndexFile) throws InvalidPathException {
-        Path p = Path.of(pathToIndexFile); //TODO: add try catch
+        Path p = Path.of(pathToIndexFile);
         Search search = new Search(p);
-        System.out.println("Searching in " + p.getFileName());
         search.search("compare double")
-                .forEach(e -> System.out.format("%6f: %s\n", e.getValue(), e.getKey()));
+                .forEach(e -> System.out.format("%6f: %s\n", e.weight, e.path));
     }
 }

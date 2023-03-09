@@ -60,11 +60,10 @@ public class Model {
      * This method is called after indexing a document. All the tokens in that document are added to the model's total token count.
      * @param docIndex Indexed document
      */
-    private void addToWortCount(HashMap<String, Integer> docIndex) { //TODO: this should only increment the counter by 1 per document?? maybe??
-        docIndex.forEach((token, count) -> {
-            totalTokenCount.
-                    put(token, totalTokenCount.getOrDefault(token, 0) + count);
-        });
+    private void addToWortCount(HashMap<String, Integer> docIndex) {
+        docIndex.forEach((token, count) ->
+            totalTokenCount.put(token, totalTokenCount.getOrDefault(token, 0) + count)
+        );
     }
 
     /**
