@@ -31,17 +31,19 @@ public class App {
 
     public void runServer(int port, String pathToIndex) throws InvalidPathException {
         try {
-            Server server = new Server(8080, Path.of(pathToIndex));
+            new Server(port, Path.of(pathToIndex));
         }
         catch (IOException io) {
             System.err.println("Invalid port");
         }
     }
 
-    public void runSearch(String pathToIndexFile) throws InvalidPathException {
-        Path p = Path.of(pathToIndexFile);
-        Search search = new Search(p);
-        search.search("compare double")
-                .forEach(e -> System.out.format("%6f: %s\n", e.weight, e.path));
+    public void runServer(String pathToIndex) throws InvalidPathException {
+        try {
+            new Server(8080, Path.of(pathToIndex));
+        }
+        catch (IOException io) {
+            System.err.println("Invalid port");
+        }
     }
 }

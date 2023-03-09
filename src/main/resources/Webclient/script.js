@@ -18,10 +18,10 @@ function sendRequest(query) {
             console.log(response);
             response.map(result => {
                 resultBox.innerHTML += `
-                    <li>${result.path}</li>
+                    <li><a href="${result.path}">${result.docName}</a></li>
                 `
             })
-        });
+        }); //this link does not work?
 }
 
 let input = document.body.querySelector("input");

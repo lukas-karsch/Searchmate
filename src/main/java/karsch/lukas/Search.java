@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: offer several algorithms to the user
+
 /**
  * This class searches through the indexed files upon being provided with a search query. The serach is done using TF-IDF
  * (Read more about this algorithm here <a href="https://en.wikipedia.org/wiki/Tf">here</a>).
@@ -27,24 +29,20 @@ public class Search {
         model.pathToDocumentIndex.forEach(
                 (path, freq) -> {
                     int totalTokenAmt = freq.size(); //TODO: This is incorrect -> totalTokenAmt "N" needs to be cached
+                    SearchResult result = new SearchResult(path, Path.of(path).getFileName().toString(), 0);
                     tokenized.forEach( token -> {
-                                double weight = 0;
-                                if(freq.containsKey(token)) {
-                                    double tf = (double) freq.get(token) / totalTokenAmt;
-                                    double idf = -1 * Math.log((double) model.pathToDocumentIndex.size() / model.totalTokenCount.values().stream().reduce(0, Integer::sum)); //TODO: What base should be used here?
-                                    weight += tf * idf;
-                                }
-                                results.add(new SearchResult(path, weight)); //TODO fix
-                            }
-                    );
-                }
-        );
+                        if(freq.containsKey(token)) {
+                            double tf = (double) freq.get(token) / totalTokenAmt;
+                            double idf = -1 * Math.log((double) model.pathToDocumentIndex.size() / model.totalTokenCount.values().stream().reduce(0, Integer::sum));
+                            result.weight += tf * idf;
+                        }
+                    });
+                    results.add(result);
+        });
         return results.stream()
+                .filter((result) -> result.weight != 0)
                 .sorted((result1, result2) -> Double.compare(result2.weight, result1.weight))
                 .toList();
-        /*return weights.entrySet().stream()
-                .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
-                .toList();*/
     }
 
     //TODO: clean this up / refactor, together with Indexer.java

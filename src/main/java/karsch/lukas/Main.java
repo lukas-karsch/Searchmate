@@ -12,15 +12,14 @@ public class Main {
                     app.runIndexing(args[1], args[2]);
                 }
                 case "serve" -> {
-                    app.runServer(Integer.parseInt(args[1]), args[2]);
+                    if(args.length == 2) {
+                        app.runServer(args[1]);
+                    }
+                    else app.runServer(Integer.parseInt(args[1]), args[2]);
                 }
                 case "count" -> {
                     System.out.println("Counting all files...");
                     app.countAllFiles(args[1]);
-                }
-                case "search" -> {
-                    System.out.println("Searching...");
-                    app.runSearch(args[1]);
                 }
                 default ->
                     System.err.println("Unknown command. Check the README.md file for infos on usage.");

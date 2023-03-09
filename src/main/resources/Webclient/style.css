@@ -10,14 +10,27 @@ body {
     text-align: center;
 }
 
+#results {
+    text-align: left;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    padding: 0.125rem;
+}
+
+a {
+    color: black;
+}
+
+a:hover {
+    background-color: #ffd54b;
+}
+
 input {
     padding: 1rem;
     width: 400px;
-}
-
-footer {
-    padding-block: 2rem;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
 }

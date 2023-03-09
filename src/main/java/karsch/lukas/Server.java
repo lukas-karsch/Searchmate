@@ -34,15 +34,8 @@ public class Server extends NanoHTTPD {
                 case "/script.js":
                     return newFixedLengthResponse(Response.Status.OK, "text/javascript", Files.readString(Path.of("src/main/resources/Webclient/script.js")));
                 case "/api/search":
-                    //TODO: make this prettier
-                    HashMap<String, String> body = new HashMap<>();
-                    session.parseBody(body);
-                    String query = body.get("postData");
-                    query = query.substring(query.indexOf(':')+2, query.lastIndexOf("\""));
-                    Search s = new Search(pathToIndex);
-                    List<SearchResult> results = s.search(query);
                     Gson gson = new Gson();
-                    String resultsToJson = gson.toJson(results);
+                    String resultsToJson = gson.toJson(handleSearch(session));
                     return newFixedLengthResponse(Response.Status.OK, "application/json", resultsToJson);
                 default:
                     return newFixedLengthResponse(Response.Status.BAD_REQUEST, "text/html", Files.readString(Path.of("src/main/resources/Webclient/404.html")));
@@ -54,5 +47,14 @@ public class Server extends NanoHTTPD {
         } catch (ResponseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private List<SearchResult> handleSearch(IHTTPSession session) throws ResponseException, IOException {
+        HashMap<String, String> requestBody = new HashMap<>();
+        session.parseBody(requestBody);
+        String query = requestBody.get("postData");
+        query = query.substring(query.indexOf(':')+2, query.lastIndexOf("\""));
+        Search s = new Search(pathToIndex);
+        return s.search(query);
     }
 }

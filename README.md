@@ -3,6 +3,7 @@ Local search engine that indexes your files. Input your search query through a s
 Supported filetypes: 
 - plain text
 - xml / html / xhtml
+- (soon) pdf
 
 Read about the TF-IDF algorithm: https://en.wikipedia.org/wiki/Tf–idf
 
@@ -10,9 +11,17 @@ Read about the TF-IDF algorithm: https://en.wikipedia.org/wiki/Tf–idf
 Arguments in square brackets [ ] are optional
 
 ### Index files:
+Index all the files inside a directory.
+The resulting file is used by the application to search upon being provided with a user query.
+
 <code> < index > < indexing target > < target file > </code>
 
 ### Run server:
-<code>< serve > [address] </code>
+The server will run at localhost:port (default port is 8080). Access the webclient through any browser and enter your search query.
 
-Default address is 127.0.0.100
+<code>< serve > [port] < index > </code>
+
+### Count files
+Count all files (excluding directories) inside a folder.
+
+<code>count < target folder ></code>
