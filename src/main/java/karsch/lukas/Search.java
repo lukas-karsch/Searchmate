@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO: offer several algorithms to the user
+//TODO: wenn file ALLE terms aus dem enthält (vielleicht als literal) boost zu weigth geben?
 
 /**
  * This class searches through the indexed files upon being provided with a search query. The serach is done using TF-IDF
@@ -14,8 +15,8 @@ import java.util.List;
 public class Search {
     private final Model model;
 
-    public Search(Path pathToIndex) {
-        model = new Model(pathToIndex);
+    public Search(Model model) {
+        this.model = model;
     }
 
     /**
@@ -27,12 +28,12 @@ public class Search {
         List<String> tokenized = tokenizeQuery(query.toLowerCase());
         List<SearchResult> results = new ArrayList<>();
         model.pathToDocumentIndex.forEach(
-                (path, freq) -> {
-                    int totalTokenAmt = freq.size(); //TODO: This is incorrect -> totalTokenAmt "N" needs to be cached
+                (path, doc) -> {
+                    int N = doc.numberOfTokens;
                     SearchResult result = new SearchResult(path, Path.of(path).getFileName().toString(), 0);
                     tokenized.forEach( token -> {
-                        if(freq.containsKey(token)) {
-                            double tf = (double) freq.get(token) / totalTokenAmt;
+                        if(doc.counts.containsKey(token)) {
+                            double tf = (double) doc.counts.get(token) / N;
                             double idf = -1 * Math.log((double) model.pathToDocumentIndex.size() / model.totalTokenCount.values().stream().reduce(0, Integer::sum));
                             result.weight += tf * idf;
                         }

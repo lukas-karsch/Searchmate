@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Server extends NanoHTTPD {
-    private final Path pathToIndex;
+    private final Search search;
 
     public Server(int port, Path pathToIndex) throws IOException {
         super(port);
-        this.pathToIndex = pathToIndex;
+        this.search = new Search(new Model(pathToIndex));
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         System.out.format("Server is running at %d\n", port);
     }
@@ -54,7 +54,6 @@ public class Server extends NanoHTTPD {
         session.parseBody(requestBody);
         String query = requestBody.get("postData");
         query = query.substring(query.indexOf(':')+2, query.lastIndexOf("\""));
-        Search s = new Search(pathToIndex);
-        return s.search(query);
+        return search.search(query);
     }
 }

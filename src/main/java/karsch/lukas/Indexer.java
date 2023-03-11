@@ -4,16 +4,16 @@ import org.jsoup.Jsoup;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 
 /**
  * This class indexes single files.
  */
 public class Indexer {
-    private HashMap<String, Integer> frequency;
+    private Document document;
 
-    public HashMap<String, Integer> indexFile(Path p) {
-        frequency = new HashMap<>();
+    //TODO: include stemming
+    public Document indexFile(Path p) {
+        document = new Document();
         String content = "";
 
         try {
@@ -31,7 +31,8 @@ public class Indexer {
             System.err.println("An error occured while reading " + p.getFileName());
         }
 
-        //NOTE: vielleicht einfach einen index / pointer benutzen anstatt den String ständig neu zu machen
+        //TODO vielleicht einfach einen index / pointer benutzen anstatt den String ständig neu zu machen
+        //TODO: tokenizing should work differently.
         while (content.length() > 0) {
             char first = content.charAt(0);
             if(Character.isWhitespace(first)) {
@@ -64,15 +65,16 @@ public class Indexer {
                 content = content.substring(1);
             }
         }
-        return frequency;
+        return document;
     }
     private void putToken(String token) {
         token = token.toLowerCase();
-        if(frequency.containsKey(token)) {
-            frequency.put(token, frequency.get(token) + 1);
+        if(document.counts.containsKey(token)) {
+            document.counts.put(token, document.counts.get(token) + 1);
         }
         else {
-            frequency.put(token, 1);
+            document.counts.put(token, 1);
         }
+        document.numberOfTokens++;
     }
 }

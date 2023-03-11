@@ -10,8 +10,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 public class Model {
-    //TODO: save amount of tokens "n" per document, TF and IDF
-    public HashMap<String, HashMap<String, Integer>> pathToDocumentIndex;   //maps Paths to their indexed document
+    //TODO: save TF (and IDF?)
+    public HashMap<String, Document> pathToDocumentIndex;   //maps Paths to their indexed document
     public HashMap<String, Integer> totalTokenCount;                        //maps every single token to their count across all documents
 
     public Model() {
@@ -49,9 +49,9 @@ public class Model {
         for(File f : allFiles) {
             if(f.isDirectory()) buildModel(f.toPath());
             else {
-                HashMap<String, Integer> docIndex = indexer.indexFile(f.toPath());
-                pathToDocumentIndex.put(f.getPath(), docIndex);
-                addToWortCount(docIndex);
+                Document doc = indexer.indexFile(f.toPath());
+                pathToDocumentIndex.put(f.getPath(), doc);
+                addToWortCount(doc);
             }
         }
     }
@@ -60,8 +60,8 @@ public class Model {
      * This method is called after indexing a document. All the tokens in that document are added to the model's total token count.
      * @param docIndex Indexed document
      */
-    private void addToWortCount(HashMap<String, Integer> docIndex) {
-        docIndex.forEach((token, count) ->
+    private void addToWortCount(Document document) {
+        document.counts.forEach((token, count) ->
             totalTokenCount.put(token, totalTokenCount.getOrDefault(token, 0) + count)
         );
     }
