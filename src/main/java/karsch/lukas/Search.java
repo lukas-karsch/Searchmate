@@ -31,7 +31,8 @@ public class Search {
         model.pathToDocumentIndex.forEach(
                 (path, doc) -> {
                     int N = doc.numberOfTokens;
-                    SearchResult result = new SearchResult(path, Path.of(path).getFileName().toString(), 0);
+                    Path p = Path.of(path);
+                    SearchResult result = new SearchResult(path, p.getFileName().toString(), 0, Filetype.getFiletype(p));
                     tokenized.forEach( token -> {
                         if(doc.counts.containsKey(token)) {
                             double tf = (double) doc.counts.get(token) / N;

@@ -19,7 +19,7 @@ public class Indexer {
         try {
             Filetype filetype = Filetype.getFiletype(p.getFileName());
             content = Files.readString(p);
-            if (filetype == Filetype.XML) {
+            if (filetype == Filetype.XML || filetype == Filetype.HTML) {
                 content = Jsoup.parse(content).body().text();
             }
             System.out.format("[INFO] Indexing %s. File contains %d readable characters\n", p.getFileName(), content.length());

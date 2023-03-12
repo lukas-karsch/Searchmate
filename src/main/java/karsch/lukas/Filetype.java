@@ -9,6 +9,7 @@ import java.nio.file.Path;
 //TODO: add PDF support
 public enum Filetype {
     XML,
+    HTML,
     PLAIN;
 
     public static Filetype getFiletype(Path fileName) {
@@ -16,8 +17,16 @@ public enum Filetype {
         String extension = filename.substring(filename.lastIndexOf('.') + 1);
 
         return switch (extension) {
-            case "xml", "html", "xhtml" -> Filetype.XML;
+            case "html", "xhtml" -> Filetype.HTML;
+            case "xml" -> Filetype.XML;
             default -> PLAIN;
+        };
+    }
+
+    public static String getMimeType(Filetype filetype) {
+        return switch(filetype) {
+            case HTML -> "text/html";
+            default -> "text/plain";
         };
     }
 }

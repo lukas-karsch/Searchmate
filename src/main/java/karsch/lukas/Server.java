@@ -41,8 +41,9 @@ public class Server extends NanoHTTPD {
                     return newFixedLengthResponse(Response.Status.OK, "application/json", resultsToJson);
                 case "/api/results":
                     int requestedIndex = Integer.parseInt(session.getQueryParameterString());
-                    Path requestedFilePath = Path.of(search.getLastSearchResult().get(requestedIndex).path);
-                    return newFixedLengthResponse(Response.Status.OK, "text/html", Files.readString(requestedFilePath));
+                    SearchResult requestedResult = search.getLastSearchResult().get(requestedIndex);
+                    Path requestedFilePath = Path.of(requestedResult.path);
+                    return newFixedLengthResponse(Response.Status.OK, Filetype.getMimeType(requestedResult.filetype), Files.readString(requestedFilePath));
                 default:
                     return newFixedLengthResponse(Response.Status.BAD_REQUEST, "text/html", Files.readString(Path.of("src/main/resources/Webclient/404.html")));
             }
