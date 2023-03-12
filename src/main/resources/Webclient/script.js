@@ -1,5 +1,5 @@
-function sendRequest(query) {
-    console.log("Requesting...");
+function sendSearchRequest(query) {
+    console.log(`Requesting "${query}"`);
     const resultBox = document.body.querySelector("#results > ul");
     resultBox.innerHTML = "";
 
@@ -16,18 +16,19 @@ function sendRequest(query) {
         .then((response) => response.json())
         .then((response) => {
             console.log(response);
-            response.map(result => {
+            response.map((result, i) => {
+                let path = result.path;
                 resultBox.innerHTML += `
-                    <li><a href="${result.path}">${result.docName}</a></li>
+                    <li><a href="/api/results?${i}" data-path="${path}">${result.docName}</a></li>
                 `
-            })
-        }); //this link does not work?
+            });
+        });
 }
 
 let input = document.body.querySelector("input");
 input.addEventListener("keypress", e => {
     if(e.key === "Enter") {
         e.preventDefault();
-        sendRequest(input.value);
+        sendSearchRequest(input.value);
     }
 })

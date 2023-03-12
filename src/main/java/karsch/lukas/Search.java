@@ -14,16 +14,17 @@ import java.util.List;
  */
 public class Search {
     private final Model model;
+    private List<SearchResult> lastSearchResult = new ArrayList<>();
 
     public Search(Model model) {
         this.model = model;
     }
 
     /**
+     * Searches for tokens of the query inside the model
      * @param query Search query
-     * @return Returns a list of Entries< Path, Weight > sorted by their weight.
      */
-    public List<SearchResult> search(String query) {
+    public void search(String query) {
         System.out.format("Searching for '%s'\n", query);
         List<String> tokenized = tokenizeQuery(query.toLowerCase());
         List<SearchResult> results = new ArrayList<>();
@@ -40,10 +41,14 @@ public class Search {
                     });
                     results.add(result);
         });
-        return results.stream()
+        lastSearchResult = results.stream()
                 .filter((result) -> result.weight != 0)
                 .sorted((result1, result2) -> Double.compare(result2.weight, result1.weight))
                 .toList();
+    }
+
+    public  List<SearchResult> getLastSearchResult() {
+        return lastSearchResult;
     }
 
     //TODO: clean this up / refactor, together with Indexer.java
