@@ -10,6 +10,7 @@ import java.nio.file.Path;
 public enum Filetype {
     XML,
     HTML,
+    PDF,
     PLAIN;
 
     public static Filetype getFiletype(Path fileName) {
@@ -19,6 +20,7 @@ public enum Filetype {
         return switch (extension) {
             case "html", "xhtml" -> Filetype.HTML;
             case "xml" -> Filetype.XML;
+            case "pdf" -> Filetype.PDF;
             default -> PLAIN;
         };
     }
@@ -26,6 +28,7 @@ public enum Filetype {
     public static String getMimeType(Filetype filetype) {
         return switch(filetype) {
             case HTML -> "text/html";
+            case PDF -> "application/pdf";
             default -> "text/plain";
         };
     }
