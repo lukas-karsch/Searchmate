@@ -4,6 +4,8 @@ import org.jsoup.Jsoup;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class indexes single files.
@@ -31,40 +33,8 @@ public class Indexer {
             System.err.println("An error occured while reading " + p.getFileName());
         }
 
-        //TODO vielleicht einfach einen index / pointer benutzen anstatt den String ständig neu zu machen
-        //TODO: tokenizing should work differently.
-        while (content.length() > 0) {
-            char first = content.charAt(0);
-            if(Character.isWhitespace(first)) {
-                content = content.substring(1);
-            }
-            else if (Character.isDigit(first)) {
-                StringBuilder token = new StringBuilder();
-                int cut = 0;
-
-                while (cut < content.length() && Character.isDigit(content.charAt(cut))) {
-                    token.append(content.charAt(cut));
-                    cut++;
-                }
-                content = content.substring(cut);
-                putToken(token.toString());
-            }
-            else if (Character.isAlphabetic(first)) {
-                StringBuilder token = new StringBuilder();
-                int cut = 0;
-
-                while (cut < content.length() && (Character.isAlphabetic(content.charAt(cut)) || Character.isDigit(content.charAt(cut)))) {
-                    token.append(content.charAt(cut));
-                    cut++;
-                }
-                content = content.substring(cut);
-                putToken(token.toString());
-            }
-            else {
-                putToken(String.valueOf(content.charAt(0)));
-                content = content.substring(1);
-            }
-        }
+        List<String> allTokens = getTokensFromString(content);
+        allTokens.forEach(this::putToken);
         return document;
     }
     private void putToken(String token) {
@@ -76,5 +46,34 @@ public class Indexer {
             document.counts.put(token, 1);
         }
         document.numberOfTokens++;
+    }
+
+    public List<String> getTokensFromString(String input) {
+        if(input.length() == 0) return new ArrayList<>();
+        int pos = 0;
+        List<String> output = new ArrayList<>();
+
+        while (pos < input.length()) {
+            StringBuilder token = new StringBuilder();
+            char first = input.charAt(pos);
+
+            if(Character.isAlphabetic(first)) {
+                while(pos < input.length() && Character.isAlphabetic(input.charAt(pos))) {
+                    token.append(input.charAt(pos));
+                    pos++;
+                }
+                output.add(token.toString().toLowerCase());
+            }
+            else if(Character.isDigit(first)) {
+                while(pos < input.length() && Character.isDigit(input.charAt(pos))) {
+                    token.append(input.charAt(pos));
+                    pos++;
+                }
+                output.add(token.toString().toLowerCase());
+            }
+            else pos++;
+        }
+
+        return output;
     }
 }

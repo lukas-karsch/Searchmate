@@ -34,7 +34,7 @@ public class Server extends NanoHTTPD {
                     resultsToJson = gson.toJson(handleSearch(session));
                     return newFixedLengthResponse(Response.Status.OK, "application/json", resultsToJson);
                 }
-                case "/api/results" -> { //TODO: This should use query string instead of HTTP post
+                case "/api/results" -> { //TODO: further redirections from these search results are currently not possible!
                     int requestedIndex = Integer.parseInt(session.getQueryParameterString());
                     SearchResult requestedResult = search.getLastSearchResult().get(requestedIndex);
                     Path requestedFilePath = Path.of(requestedResult.path);
@@ -52,8 +52,7 @@ public class Server extends NanoHTTPD {
             return newFixedLengthResponse(Response.Status.BAD_REQUEST, "text/html", "<h1>Bad request</h1><p>You are trying to view a search result that does not exist</p>");
         }
         catch (IOException e) {
-            System.err.println("Something went wrong when providing the file.");
-            e.printStackTrace();
+            System.err.format("Something went wrong when providing file: %s\n.", e.getMessage());
             return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/html", "<h1>something went wrong on the server</h1>");
         }
         catch (ResponseException e) {
@@ -63,7 +62,7 @@ public class Server extends NanoHTTPD {
 
     private List<SearchResult> handleSearch(IHTTPSession session) throws ResponseException, IOException {
         String query = getPostData(session);
-        query = query.substring(query.indexOf(':')+2, query.lastIndexOf("\"")); //TODO: Make SearchRequest a class / object?
+        query = query.substring(query.indexOf(':')+2, query.lastIndexOf("\"")); //TODO: Make SearchRequest a class / object to avoid these String operations?
         search.search(query);
         return search.getLastSearchResult();
     }

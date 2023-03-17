@@ -3,7 +3,8 @@ package karsch.lukas;
 import java.nio.file.InvalidPathException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) { //TODO: args : what about whitespace in filepaths?
+
         App app = new App();
         try {
             switch (args[0]) {

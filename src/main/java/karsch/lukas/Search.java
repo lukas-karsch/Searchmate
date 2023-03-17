@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO: offer several algorithms to the user
-//TODO: wenn file ALLE terms aus dem enthält (vielleicht als literal) boost zu weigth geben?
+//TODO: wenn file ALLE terms aus dem enthält (vielleicht als literal) boost zu weight geben?
 
 /**
  * This class searches through the indexed files upon being provided with a search query. The serach is done using TF-IDF
@@ -15,6 +15,7 @@ import java.util.List;
 public class Search {
     private final Model model;
     private List<SearchResult> lastSearchResult = new ArrayList<>();
+    private final Indexer indexer = new Indexer();
 
     public Search(Model model) {
         this.model = model;
@@ -26,7 +27,7 @@ public class Search {
      */
     public void search(String query) {
         System.out.format("Searching for '%s'\n", query);
-        List<String> tokenized = tokenizeQuery(query.toLowerCase());
+        List<String> tokenized = indexer.getTokensFromString(query.toLowerCase());
         List<SearchResult> results = new ArrayList<>();
         model.pathToDocumentIndex.forEach(
                 (path, doc) -> {
@@ -42,6 +43,8 @@ public class Search {
                     });
                     results.add(result);
         });
+        //The more results a search yields, the longer it takes to respond to a request.
+        //TODO: test the correlation (linear / quadratic?)
         lastSearchResult = results.stream()
                 .filter((result) -> result.weight != 0)
                 .sorted((result1, result2) -> Double.compare(result2.weight, result1.weight))
@@ -52,43 +55,4 @@ public class Search {
         return lastSearchResult;
     }
 
-    //TODO: clean this up / refactor, together with Indexer.java
-    private List<String> tokenizeQuery(String query) {
-        List<String> tokenized = new ArrayList<>();
-
-        while (query.length() > 0) {
-            char first = query.charAt(0);
-            if(Character.isWhitespace(first)) {
-                query = query.substring(1);
-            }
-            else if (Character.isDigit(first)) {
-                StringBuilder token = new StringBuilder();
-                int cut = 0;
-
-                while (cut < query.length() && Character.isDigit(query.charAt(cut))) {
-                    token.append(query.charAt(cut));
-                    cut++;
-                }
-                query = query.substring(cut);
-                tokenized.add(token.toString());
-            }
-            else if (Character.isAlphabetic(first)) {
-                StringBuilder token = new StringBuilder();
-                int cut = 0;
-
-                while (cut < query.length() && (Character.isAlphabetic(query.charAt(cut)) || Character.isDigit(query.charAt(cut)))) {
-                    token.append(query.charAt(cut));
-                    cut++;
-                }
-                query = query.substring(cut);
-                tokenized.add(token.toString());
-            }
-            else {
-                tokenized.add(String.valueOf(query.charAt(0)));
-                query = query.substring(1);
-            }
-        }
-
-        return tokenized;
-    }
 }
