@@ -35,6 +35,8 @@ public class Indexer {
 
         List<String> allTokens = getTokensFromString(content);
         allTokens.forEach(this::putToken);
+        document.numberOfTokens = allTokens.size();
+        //TODO: calculate and save TF somewhere here
         return document;
     }
     private void putToken(String token) {
@@ -45,7 +47,6 @@ public class Indexer {
         else {
             document.counts.put(token, 1);
         }
-        document.numberOfTokens++;
     }
 
     public List<String> getTokensFromString(String input) {

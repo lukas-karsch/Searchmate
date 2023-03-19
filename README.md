@@ -3,12 +3,12 @@ Local search engine that indexes your files. Input your search query through a s
 Supported filetypes: 
 - plain text
 - xml / html / xhtml
-- (soon) pdf
+- (coming soon) pdf
 
 Read about the TF-IDF algorithm: https://en.wikipedia.org/wiki/Tf–idf
 
 ## Run Searchmate
-Arguments in square brackets [ ] are optional
+Arguments in square brackets [ ] are optional. Remember to wrap your filepaths in parentheses if they contain whitespaces.
 
 ### Index files:
 Index all the files inside a directory.

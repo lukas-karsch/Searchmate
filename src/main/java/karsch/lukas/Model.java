@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 public class Model {
     //TODO: save TF !
+    public String rootFolder = null;
     public HashMap<String, Document> pathToDocumentIndex;   //maps Paths to their indexed document
     public HashMap<String, Integer> totalTokenCount;        //maps every single token to their count across all documents
 
@@ -41,6 +42,10 @@ public class Model {
      * @param path Path to the directory that shall be searched
      */
     public void buildModel(Path path) {
+        if(rootFolder == null) {
+            rootFolder = path.toString();
+        }
+
         File dir = new File(path.toUri());
         File[] allFiles = dir.listFiles();
         if(allFiles == null) return;

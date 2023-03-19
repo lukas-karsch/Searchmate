@@ -44,7 +44,13 @@ public class Server extends NanoHTTPD {
                     if (Files.isDirectory(requestedPath)) {
                         return newFixedLengthResponse(Response.Status.OK, Files.probeContentType(requestedPath), Files.readString(Path.of(requestedPath + "/index.html")));
                     }
-                    return newFixedLengthResponse(Response.Status.OK, Files.probeContentType(requestedPath), Files.readString(requestedPath));
+                    else if(Files.isRegularFile(requestedPath)) {
+                        return newFixedLengthResponse(Response.Status.OK, Files.probeContentType(requestedPath), Files.readString(requestedPath));
+                    }
+                    else {
+                        Path path404 = Path.of(BASE_PATH + "/404.html");
+                        return newFixedLengthResponse(Response.Status.BAD_REQUEST, Files.probeContentType(path404), Files.readString(path404));
+                    }
                 }
             }
         }

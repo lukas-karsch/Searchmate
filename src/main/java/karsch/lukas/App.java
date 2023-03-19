@@ -12,12 +12,17 @@ public class App {
      *                 needs to be supplied to runServer() when trying to provide queries later on.
      */
     public void runIndexing(String indexingTarget, String targetFile) throws InvalidPathException {
+        final long timeStart = System.currentTimeMillis();
+
         final Path indexingTargetPath = Path.of(indexingTarget);
         final Path targetFilePath = Path.of(targetFile);
 
         final Model model = new Model();
         model.buildModel(indexingTargetPath);
         model.serializeToJson(targetFilePath);
+
+        final long timeEnd = System.currentTimeMillis();
+        System.out.format("Took %d seconds\n", (timeEnd - timeStart) / 1000);
     }
 
     /**

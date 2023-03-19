@@ -8,7 +8,7 @@ import java.util.List;
 //TODO: wenn file ALLE terms aus dem enthält (vielleicht als literal) boost zu weight geben?
 
 /**
- * This class searches through the indexed files upon being provided with a search query. The serach is done using TF-IDF
+ * This class searches through the indexed files upon being provided with a search query. The search is done using TF-IDF
  * (Read more about this algorithm here <a href="https://en.wikipedia.org/wiki/Tf">here</a>).
  * This class includes several algorithms to calculate the term weight.
  */
@@ -51,8 +51,11 @@ public class Search {
                 .toList();
     }
 
-    public  List<SearchResult> getLastSearchResult() {
+    public List<SearchResult> getLastSearchResult() {
         return lastSearchResult;
     }
 
+    public String getRootFolder() {
+        return model.rootFolder;
+    }
 }
