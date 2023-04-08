@@ -32,6 +32,7 @@ public class Model {
             totalTokenCount = new HashMap<>();
         }
         else {
+            rootFolder = deserialized.rootFolder;
             pathToDocumentIndex = deserialized.pathToDocumentIndex;
             totalTokenCount = deserialized.totalTokenCount;
         }
@@ -50,10 +51,10 @@ public class Model {
         File[] allFiles = dir.listFiles();
         if(allFiles == null) return;
 
-        Indexer indexer = new Indexer();
         for(File f : allFiles) {
             if(f.isDirectory()) buildModel(f.toPath());
             else {
+                Indexer indexer = new Indexer(); //TODO: aus der methode rausziehen?
                 Document doc = indexer.indexFile(f.toPath());
                 pathToDocumentIndex.put(f.getPath(), doc);
                 addToWortCount(doc);
@@ -76,7 +77,7 @@ public class Model {
      * @param filePath Path to the json file that stores the results of file indexation
      * @return Model object from file. Returns Null if the provided file is invalid
      */
-    public static Model deserializeFromJson(Path filePath) {
+    private Model deserializeFromJson(Path filePath) {
         final Gson DESERIALIZER = new Gson();
         Model deserialized;
         try {

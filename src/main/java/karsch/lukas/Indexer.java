@@ -11,11 +11,14 @@ import java.util.List;
  * This class indexes single files.
  */
 public class Indexer {
-    private Document document;
+    private final Document document;
+
+    public Indexer () {
+        document = new Document();
+    }
 
     //TODO: include stemming
     public Document indexFile(Path p) {
-        document = new Document();
         String content = "";
 
         try {
@@ -30,27 +33,23 @@ public class Indexer {
             System.err.println("[ERR] Could not index file " + p.getFileName() + ". It might be too large.");
         }
         catch (Exception e) {
-            System.err.println("An error occured while reading " + p.getFileName());
+            System.err.println("An error occurred while reading " + p.getFileName());
         }
 
-        List<String> allTokens = getTokensFromString(content);
-        allTokens.forEach(this::putToken);
+        List<String> allTokens = getSortedTokensFromString(content);
         document.numberOfTokens = allTokens.size();
-        //TODO: calculate and save TF somewhere here
+        allTokens.forEach(this::putToken);
         return document;
     }
+
     private void putToken(String token) {
         token = token.toLowerCase();
-        if(document.counts.containsKey(token)) {
-            document.counts.put(token, document.counts.get(token) + 1);
-        }
-        else {
-            document.counts.put(token, 1);
-        }
+        document.counts.put(token, document.counts.getOrDefault(token, 0) + 1);
     }
 
-    public List<String> getTokensFromString(String input) {
+    public List<String> getSortedTokensFromString(String input) {
         if(input.length() == 0) return new ArrayList<>();
+
         int pos = 0;
         List<String> output = new ArrayList<>();
 

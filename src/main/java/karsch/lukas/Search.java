@@ -27,13 +27,13 @@ public class Search {
      */
     public void search(String query) {
         System.out.format("Searching for '%s'\n", query);
-        List<String> tokenized = indexer.getTokensFromString(query.toLowerCase());
+        List<String> tokenized = indexer.getSortedTokensFromString(query.toLowerCase());
         List<SearchResult> results = new ArrayList<>();
         model.pathToDocumentIndex.forEach(
                 (path, doc) -> {
                     int N = doc.numberOfTokens;
                     Path p = Path.of(path);
-                    SearchResult result = new SearchResult(path, p.getFileName().toString(), 0, Filetype.getFiletype(p));
+                    SearchResult result = new SearchResult(path, p.getFileName().toString(), Filetype.getFiletype(p));
                     tokenized.forEach( token -> {
                         if(doc.counts.containsKey(token)) {
                             double tf = (double) doc.counts.get(token) / N;
